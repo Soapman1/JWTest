@@ -41,55 +41,40 @@ AJWProjectCharacter::AJWProjectCharacter()
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 
-	// Create a gun mesh component
-	//FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	//FP_Gun->SetOnlyOwnerSee(false);			// otherwise won't be visible in the multiplayer
-	//FP_Gun->bCastDynamicShadow = false;
-	//FP_Gun->CastShadow = false;
-	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
-	//FP_Gun->SetupAttachment(RootComponent);
+	
+	// Create bullet location
+	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	FP_MuzzleLocation->SetupAttachment(FirstPersonCameraComponent);
+	FP_MuzzleLocation->SetRelativeLocation(FVector(108.0f, 11.0f, -24.0f));
+	FP_MuzzleLocation->SetRelativeRotation(FRotator(25.0f, -21.0f, -2.0f));
 
-	//FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-	//FP_MuzzleLocation->SetupAttachment(FP_Gun);
-	//FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
-
-	// Default offset from the character location for projectiles to spawn
-	//GunOffset = FVector(100.0f, 0.0f, 10.0f);
-
+	//Event begin overlap	
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AJWProjectCharacter::BeginOverlap);
 
 	
 
-
 }
+
 
 void AJWProjectCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
 
-	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
-	//FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-
+	
 	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
 	
 	Mesh1P->SetHiddenInGame(false, true);
 
-	ObjectActor = UGameplayStatics::GetActorOfClass(GetWorld(), APickUpObject::StaticClass());
-	if (ObjectActor)
-	{
-		APickUpObject* myObj = Cast <APickUpObject>(ObjectActor);
-		if (myObj)
-		{
-			myObj->PickedObject.AddDynamic(this, &AJWProjectCharacter::CheckObject);
-			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Delegate is create"));
-		}
-	}	
 	
 
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
+
+
+
 
 void AJWProjectCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -115,6 +100,20 @@ void AJWProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AJWProjectCharacter::LookUpAtRate);
 }
 
+void AJWProjectCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		ObjectByPick = Cast <APickUpObject>(OtherActor);
+		if (ObjectByPick)
+		{
+			CheckObject(ObjectByPick->ObjectType, ObjectByPick->WeaponType, ObjectByPick->ObjectName);
+		}
+		
+	}
+}
+
+//Init weapon in hands
 void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 {
 
@@ -149,38 +148,22 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 					FAttachmentTransformRules Rule(EAttachmentRule::SnapToTarget, false);
 					myWeapon->AttachToComponent(Mesh1P, Rule, FName("RightSocket"));
 					CurrentWeapon = myWeapon;
+					bCanFire = true;
+
+					
 				}
-				else
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("myWeapon -NULL"));
+				
 			}
-			else
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("ObjectInfo.ObjectClass -NULL"));
+			
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("InitWeapon - Weapon not found in table -NULL"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("InitWeapon - Weapon not found in table -NULL"));
 			//UE_LOG(LogTemp, Warning, TEXT("ATPSCharacter::InitWeapon - Weapon not found in table -NULL"));
 		}
 	}
 
-
-
-
-
-	switch (WeaponType)
-	{
-	case EWeaponType::GunType:
-	{
-		//ObjectActor
-		break;
-	}
-	case EWeaponType::ShotGunType:
-	{
-		break;
-	}
-	default:
-		break;
-	}
+	
 }
 
 void AJWProjectCharacter::OnFire()
@@ -261,6 +244,8 @@ void AJWProjectCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+
+//Check overlapped object
 void AJWProjectCharacter::CheckObject(EObjectType ObjectType, EWeaponType WeaponType, FName ObjectName)
 {
 	switch (ObjectType)

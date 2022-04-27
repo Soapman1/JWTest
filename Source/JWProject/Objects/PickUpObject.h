@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPickedObject, EObjectType, ObjectType, EWeaponType, WeaponType, FName, ObjectName);
 
+
 UCLASS()
 class JWPROJECT_API APickUpObject : public AActor
 {
@@ -29,6 +30,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	FPickedObject PickedObject;
+
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setting")
 		bool bIsPickable = false;
