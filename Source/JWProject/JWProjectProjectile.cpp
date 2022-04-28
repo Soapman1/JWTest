@@ -2,6 +2,7 @@
 
 #include "JWProjectProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 
 AJWProjectProjectile::AJWProjectProjectile() 
@@ -33,11 +34,17 @@ AJWProjectProjectile::AJWProjectProjectile()
 
 void AJWProjectProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	APickUpObject* PickObj = Cast <APickUpObject>(APickUpObject::StaticClass());
+	AJWProjectCharacter* ProjChar = Cast <AJWProjectCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != PickObj))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		Destroy();
+		
+		
+		// OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+			
+		UGameplayStatics::ApplyDamage(Hit.GetActor(), ProjChar->ObjectInfo.WeaponDamage, NULL, this, NULL);
+		
+		//Destroy();
 	}
 }

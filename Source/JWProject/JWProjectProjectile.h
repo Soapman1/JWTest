@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Libraries/Types.h"
+#include "JWProjectCharacter.h"
 #include "JWProjectProjectile.generated.h"
 
 class USphereComponent;
@@ -18,6 +20,9 @@ class AJWProjectProjectile : public AActor
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
 	USphereComponent* CollisionComp;
 
+	UPROPERTY()
+	AJWProjectCharacter* ProjectChar;
+
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
@@ -25,9 +30,12 @@ class AJWProjectProjectile : public AActor
 public:
 	AJWProjectProjectile();
 
+	UPROPERTY()
+		FObjectInfo ObjectInfo;
 	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 
 	/** Returns CollisionComp subobject **/
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }

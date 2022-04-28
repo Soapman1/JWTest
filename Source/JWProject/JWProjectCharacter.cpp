@@ -124,7 +124,7 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 	}
 
 	UJWGameInstance* myGI = Cast <UJWGameInstance> (GetGameInstance());
-	FObjectInfo ObjectInfo;
+	
 
 	if (myGI)
 	{
@@ -188,6 +188,14 @@ void AJWProjectCharacter::OnFire()
 				World->SpawnActor<AJWProjectProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
 			}
+
+			FHitResult HitResult;
+
+			if (HitResult.GetActor())
+			{
+				UGameplayStatics::ApplyDamage(HitResult.GetActor(), ObjectInfo.WeaponDamage , GetInstigatorController(), this, NULL);
+			}
+
 		}
 
 		// try and play the sound if specified

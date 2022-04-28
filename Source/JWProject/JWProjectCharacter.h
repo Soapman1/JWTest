@@ -86,6 +86,10 @@ public:
 	UFUNCTION()
 		void InitWeapon(EWeaponType WeaponType, FName ObjectName);
 
+	UPROPERTY()
+		FObjectInfo ObjectInfo;
+
+
 protected:
 	
 	/** Fires a projectile. */
