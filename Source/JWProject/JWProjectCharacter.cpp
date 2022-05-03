@@ -70,6 +70,20 @@ void AJWProjectCharacter::BeginPlay()
 
 }
 
+void AJWProjectCharacter::Destroyed()
+{
+	Super::Destroyed();
+
+
+	//NOT HERE, it need before destroyed.  Play Montage -> destroy 
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Actor was destroyed")));
+	//RespawnCharacter();
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-50.0f, 0.0f, 200.0f));
+	//FirstPersonCameraComponent->SetRelativeRotation
+	RespawnCharacter_BP(DeathAnim);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -164,6 +178,17 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 	}
 
 	
+}
+
+void AJWProjectCharacter::RespawnCharacter()
+{
+	//Respawn Logic
+
+}
+
+void AJWProjectCharacter::RespawnCharacter_BP_Implementation(UAnimMontage* Anim)
+{
+	//in BP
 }
 
 void AJWProjectCharacter::OnFire()

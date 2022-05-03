@@ -12,6 +12,7 @@
 UENUM(BlueprintType)
 enum class EObjectType : uint8
 {
+	NoneType UMETA(DispayName = "None"),
 	WeaponType UMETA(DisplayName = "Weapon"),
 	AmmoType UMETA(DisplayName = "Ammo"),
 	ConsumableType UMETA(DisplayName = "Consumables")
@@ -21,6 +22,7 @@ enum class EObjectType : uint8
 UENUM(BlueprintType)
 enum class EWeaponType :uint8
 {
+	NoneType UMETA(DisplayName = "None"),
 	GunType UMETA(DisplayName = "Gun"),
 	ShotGunType UMETA(DisplayName = "ShotGun")
 };

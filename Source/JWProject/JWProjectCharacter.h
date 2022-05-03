@@ -49,6 +49,10 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	virtual void Destroyed();
+
+
+
 public:
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -82,12 +86,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponInfo")
 		bool bCanFire = false;
 
+	UPROPERTY()
+		FObjectInfo ObjectInfo;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Anim")
+		UAnimMontage* DeathAnim = nullptr;
+
 	
 	UFUNCTION()
 		void InitWeapon(EWeaponType WeaponType, FName ObjectName);
 
-	UPROPERTY()
-		FObjectInfo ObjectInfo;
+	UFUNCTION(BlueprintCallable)
+		void RespawnCharacter();
+
+	UFUNCTION(BlueprintNativeEvent)
+		void RespawnCharacter_BP(UAnimMontage* Anim);
 
 
 protected:
