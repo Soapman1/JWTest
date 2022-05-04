@@ -66,9 +66,8 @@ void AJWProjectCharacter::BeginPlay()
 	
 	Mesh1P->SetHiddenInGame(false, true);
 
-	
-
 }
+
 
 void AJWProjectCharacter::Destroyed()
 {
@@ -83,6 +82,7 @@ void AJWProjectCharacter::Destroyed()
 	//FirstPersonCameraComponent->SetRelativeRotation
 	RespawnCharacter_BP(DeathAnim);
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input

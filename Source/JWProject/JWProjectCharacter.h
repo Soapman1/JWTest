@@ -46,15 +46,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 		APickUpObject* CurrentWeapon;
 
+
+		
+
 protected:
 	virtual void BeginPlay();
-
+	
 	virtual void Destroyed();
 
 
 
 public:
 
+	
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(BlueprintReadWrite, Category = Mesh)
 		USkeletalMeshComponent* Mesh1P;
@@ -91,6 +95,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anim")
 		UAnimMontage* DeathAnim = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Info")
+		float CharHealth = 100.0f;
 
 	
 	UFUNCTION()
