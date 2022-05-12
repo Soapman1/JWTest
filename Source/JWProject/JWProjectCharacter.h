@@ -15,6 +15,8 @@ class UCameraComponent;
 class UAnimMontage;
 class USoundBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSendObjectInfo, FObjectInfo, ObjectInfo);
+
 UCLASS(config=Game)
 class AJWProjectCharacter : public ACharacter
 {
@@ -46,7 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 		APickUpObject* CurrentWeapon;
 
-
+	FSendObjectInfo SendObjectInfo;
 		
 
 protected:
@@ -93,6 +95,7 @@ public:
 	UPROPERTY()
 		FObjectInfo ObjectInfo;
 
+	
 	UPROPERTY(BlueprintReadWrite, Category = "Anim")
 		UAnimMontage* DeathAnim = nullptr;
 
@@ -102,6 +105,9 @@ public:
 	
 	UFUNCTION()
 		void InitWeapon(EWeaponType WeaponType, FName ObjectName);
+
+	UFUNCTION()
+		void InitConsumable(EConsumableType ConsumableType, FName ObjectName);
 
 	UFUNCTION(BlueprintCallable)
 		void RespawnCharacter();
@@ -135,7 +141,7 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	UFUNCTION(BlueprintCallable)
-	void CheckObject(EObjectType ObjectType, EWeaponType WeaponType, FName ObjectName);
+	void CheckObject(EObjectType ObjectType, EWeaponType WeaponType, EConsumableType ConsumableType,  FName ObjectName);
 
 	UFUNCTION(BlueprintCallable)
 		void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

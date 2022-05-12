@@ -20,11 +20,19 @@ enum class EObjectType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EWeaponType :uint8
+enum class EWeaponType : uint8
 {
 	NoneType UMETA(DisplayName = "None"),
 	GunType UMETA(DisplayName = "Gun"),
 	ShotGunType UMETA(DisplayName = "ShotGun")
+};
+
+UENUM(BlueprintType)
+enum class EConsumableType : uint8
+{
+	NoneType UMETA (DispayName = "None"),
+	FirstAidType UMETA (DispayName = "FirstAid"),
+	SpeedUpType UMETA (DispayName = "SpeedUp")
 };
 
 USTRUCT(BlueprintType)
@@ -55,6 +63,27 @@ struct FProjectileInfo
 };
 
 USTRUCT(BlueprintType)
+struct FInventoryInfo
+{
+	GENERATED_BODY()
+
+		//Health kit
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		int32 HealthKitCount = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		int32 HealthKitPower = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		EConsumableType ConsumableType = EConsumableType::FirstAidType;
+
+
+	//Ammo kit
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		EWeaponType WeaponType = EWeaponType::GunType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		int32 AmmoKitCount = 0;
+};
+
+USTRUCT(BlueprintType)
 struct FObjectInfo : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -76,6 +105,7 @@ struct FObjectInfo : public FTableRowBase
 	//Projectile	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile ")
 		FProjectileInfo ProjectileSetting;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace ")
 		float WeaponDamage = 20.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace ")
@@ -87,6 +117,9 @@ struct FObjectInfo : public FTableRowBase
 	//Consumable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Type")
 		EObjectType ObjectType = EObjectType::ConsumableType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+		FInventoryInfo InventoryItemInfo;
 
 };
 
@@ -102,28 +135,7 @@ struct FAdditionalWeaponInfo
 
 };
 
-USTRUCT(BlueprintType)
-struct FInventoryInfo
-{
-	GENERATED_BODY()
 
-		//Health kit
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
-		int32 HealthKitCount = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
-		int32 HealthKitPower = 20;
-
-
-		//Ammo kit
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
-		EWeaponType WeaponType = EWeaponType::GunType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
-		int32 AmmoKitCount = 0;
-	
-
-
-
-};
 
 UCLASS()
 class JWPROJECT_API UTypes : public UBlueprintFunctionLibrary

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Libraries/Types.h"
 #include "CharHealthComponent.generated.h"
 
 
@@ -15,6 +16,8 @@ class JWPROJECT_API UCharHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UCharHealthComponent();
+
+	FObjectInfo ObjectInfo;
 
 protected:
 	// Called when the game starts
@@ -30,5 +33,8 @@ public:
 	
 	UFUNCTION()
 		void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigateBy, AActor* DamageCauser);
+
+	UFUNCTION()
+		void UseObjectInfo(FObjectInfo ObjectInfo);
 		
 };

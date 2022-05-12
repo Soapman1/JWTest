@@ -121,7 +121,7 @@ void AJWProjectCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		ObjectByPick = Cast <APickUpObject>(OtherActor);
 		if (ObjectByPick)
 		{
-			CheckObject(ObjectByPick->ObjectType, ObjectByPick->WeaponType, ObjectByPick->ObjectName);
+			CheckObject(ObjectByPick->ObjectType, ObjectByPick->WeaponType, ObjectByPick->ConsumableType, ObjectByPick->ObjectName);
 		}
 		
 	}
@@ -178,6 +178,30 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 	}
 
 	
+}
+
+void AJWProjectCharacter::InitConsumable(EConsumableType ConsumableType, FName ObjectName)
+{
+	UJWGameInstance* myGI = Cast <UJWGameInstance>(GetGameInstance());
+
+	if (myGI)
+	{
+		if (myGI->GetObjectInfoByName(ObjectName, ObjectInfo))
+		{
+			if (ObjectInfo.ObjectClass)
+			{
+				switch (ConsumableType)
+				{
+				case EConsumableType::FirstAidType:
+					SendObjectInfo.Broadcast(ObjectInfo);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
 }
 
 void AJWProjectCharacter::RespawnCharacter()
@@ -279,7 +303,7 @@ void AJWProjectCharacter::LookUpAtRate(float Rate)
 
 
 //Check overlapped object
-void AJWProjectCharacter::CheckObject(EObjectType ObjectType, EWeaponType WeaponType, FName ObjectName)
+void AJWProjectCharacter::CheckObject(EObjectType ObjectType, EWeaponType WeaponType, EConsumableType ConsumableType, FName ObjectName)
 {
 	switch (ObjectType)
 	{
@@ -291,6 +315,7 @@ void AJWProjectCharacter::CheckObject(EObjectType ObjectType, EWeaponType Weapon
 	case EObjectType::ConsumableType:
 	{
 		// add to inventory or immediately add to char
+		InitConsumable(ConsumableType, ObjectName);
 		break;
 	}
 	case EObjectType::AmmoType:

@@ -65,7 +65,7 @@ void APickUpObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
 		
-		PickedObject.Broadcast(ObjectType, WeaponType, ObjectName);
+		PickedObject.Broadcast(ObjectType, WeaponType, ConsumableType, ObjectName);
 		Destroy();
 
 	}

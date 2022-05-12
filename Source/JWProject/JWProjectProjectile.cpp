@@ -37,7 +37,7 @@ void AJWProjectProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	APickUpObject* PickObj = Cast <APickUpObject>(APickUpObject::StaticClass());
 	AJWProjectCharacter* ProjChar = Cast <AJWProjectCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != PickObj))
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != PickObj) && (OtherActor != ProjectChar))
 	{
 		
 		
@@ -45,6 +45,6 @@ void AJWProjectProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 			
 		UGameplayStatics::ApplyDamage(Hit.GetActor(), ProjChar->ObjectInfo.WeaponDamage, NULL, this, NULL);
 		
-		//Destroy();
+		// Destroy();
 	}
 }

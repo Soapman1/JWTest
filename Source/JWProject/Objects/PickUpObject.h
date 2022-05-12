@@ -9,7 +9,7 @@
 #include "JWProject/Libraries/Types.h"
 #include "PickUpObject.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPickedObject, EObjectType, ObjectType, EWeaponType, WeaponType, FName, ObjectName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FPickedObject, EObjectType, ObjectType, EWeaponType, WeaponType, EConsumableType, ConsumableType, FName, ObjectName);
 
 
 UCLASS()
@@ -43,6 +43,8 @@ public:
 		EObjectType ObjectType = EObjectType::WeaponType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Type")
 		EWeaponType WeaponType = EWeaponType::GunType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Type")
+		EConsumableType ConsumableType = EConsumableType::FirstAidType;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
