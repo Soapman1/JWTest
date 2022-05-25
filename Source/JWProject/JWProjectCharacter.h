@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Libraries/Types.h"
 #include "Objects/PickUpObject.h"
+#include "CharHealthComponent.h"
 #include "JWProjectCharacter.generated.h"
 
 class UInputComponent;
@@ -15,7 +16,9 @@ class UCameraComponent;
 class UAnimMontage;
 class USoundBase;
 
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSendObjectInfo, FObjectInfo, ObjectInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDestroyedActor, AJWProjectCharacter*, DeathActor);
 
 UCLASS(config=Game)
 class AJWProjectCharacter : public ACharacter
@@ -39,6 +42,8 @@ class AJWProjectCharacter : public ACharacter
 
 	
 
+	
+
 public:
 	AJWProjectCharacter();
 
@@ -49,6 +54,8 @@ public:
 		APickUpObject* CurrentWeapon;
 
 	FSendObjectInfo SendObjectInfo;
+	FDestroyedActor ActorWasDestroy;
+	
 		
 
 protected:
@@ -56,9 +63,13 @@ protected:
 	
 	virtual void Destroyed();
 
-
+	
 
 public:
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Health)
+		UCharHealthComponent* CharHealthComponent;
 
 	
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -67,27 +78,28 @@ public:
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
+		float BaseTurnRate;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+		float BaseLookUpRate;
 
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
+		FVector GunOffset;
 
-	/** Projectile class to spawn */
+	
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AJWProjectProjectile> ProjectileClass;
+		TSubclassOf<class AJWProjectProjectile> ProjectileClass;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		USoundBase* FireSound;
 
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	USoundBase* FireSound;
+	
 
-	/** AnimMontage to play each time we fire */
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
+		UAnimMontage* FireAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponInfo")
 		bool bCanFire = false;
@@ -96,12 +108,10 @@ public:
 		FObjectInfo ObjectInfo;
 
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Anim")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim")
 		UAnimMontage* DeathAnim = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Info")
-		float CharHealth = 100.0f;
-
+	
 	
 	UFUNCTION()
 		void InitWeapon(EWeaponType WeaponType, FName ObjectName);

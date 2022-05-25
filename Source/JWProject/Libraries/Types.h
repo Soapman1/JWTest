@@ -71,7 +71,7 @@ struct FInventoryInfo
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
 		int32 HealthKitCount = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
-		int32 HealthKitPower = 20;
+		float HealthKitPower = 20.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
 		EConsumableType ConsumableType = EConsumableType::FirstAidType;
 

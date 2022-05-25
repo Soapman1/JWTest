@@ -51,7 +51,8 @@ AJWProjectCharacter::AJWProjectCharacter()
 	//Event begin overlap	
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AJWProjectCharacter::BeginOverlap);
 
-	
+	CharHealthComponent = CreateDefaultSubobject<UCharHealthComponent>(TEXT("CharHealth"));
+	CharHealthComponent->GetOwner()->AddOwnedComponent(CharHealthComponent);
 
 }
 
@@ -66,6 +67,8 @@ void AJWProjectCharacter::BeginPlay()
 	
 	Mesh1P->SetHiddenInGame(false, true);
 
+	
+
 }
 
 
@@ -73,15 +76,17 @@ void AJWProjectCharacter::Destroyed()
 {
 	Super::Destroyed();
 
-
-	//NOT HERE, it need before destroyed.  Play Montage -> destroy 
-
+		
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Actor was destroyed")));
-	//RespawnCharacter();
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-50.0f, 0.0f, 200.0f));
-	//FirstPersonCameraComponent->SetRelativeRotation
-	RespawnCharacter_BP(DeathAnim);
+
+
+	ActorWasDestroy.Broadcast(this);
+	
+	
+		
 }
+
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -207,6 +212,7 @@ void AJWProjectCharacter::InitConsumable(EConsumableType ConsumableType, FName O
 void AJWProjectCharacter::RespawnCharacter()
 {
 	//Respawn Logic
+	//Look in GM
 
 }
 

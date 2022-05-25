@@ -17,8 +17,9 @@ public:
 	// Sets default values for this component's properties
 	UCharHealthComponent();
 
-	FObjectInfo ObjectInfo;
+	FObjectInfo ObjectInformation;
 
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -30,7 +31,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 		float CharHealth = 100.0f;
-	
+		
 	UFUNCTION()
 		void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigateBy, AActor* DamageCauser);
 
