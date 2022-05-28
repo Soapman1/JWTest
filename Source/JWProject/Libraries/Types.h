@@ -67,13 +67,21 @@ struct FInventoryInfo
 {
 	GENERATED_BODY()
 
-		//Health kit
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health kit")
 		int32 HealthKitCount = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health kit")
 		float HealthKitPower = 20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Up")
+		float SpeedUpPower = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Up")
+		float SpeedPowerTime = 3.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
 		EConsumableType ConsumableType = EConsumableType::FirstAidType;
+
+
 
 
 	//Ammo kit

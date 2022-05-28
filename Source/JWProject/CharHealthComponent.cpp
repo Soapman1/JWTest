@@ -3,7 +3,6 @@
 
 #include "CharHealthComponent.h"
 #include "JWProjectCharacter.h"
-
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -14,7 +13,7 @@ UCharHealthComponent::UCharHealthComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 
-	CharHealth = 100.0f;
+	
 	// ...
 }
 
@@ -24,18 +23,7 @@ void UCharHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
-	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UCharHealthComponent::TakeDamage);
-
-	AJWProjectCharacter* ProjChar = Cast <AJWProjectCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	
-	
-
-	if (GetOwner() == ProjChar)
-	{
-		ProjChar->SendObjectInfo.AddDynamic(this, &UCharHealthComponent::UseObjectInfo); // Delegate func name??? 
-	}
+			
 }
 
 
@@ -47,35 +35,15 @@ void UCharHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UCharHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigateBy, AActor* DamageCauser)
+float UCharHealthComponent::GetCharHealth()
 {
-	
-	AJWProjectCharacter* MyChar = Cast <AJWProjectCharacter>(DamagedActor);
-
-	CharHealth -= Damage;
-
-	
-	if (MyChar)
-	{
-		if (CharHealth < 0.0f)
-		{
-			CharHealth = 0.0f;
-		}
-
-		if (CharHealth == 0.0f )
-		{
-			MyChar->Destroy();
-		}
-	}
+	return CharHealth;
 }
 
-void UCharHealthComponent::UseObjectInfo(FObjectInfo ObjectInfo)
+void UCharHealthComponent::SetCharHealth(float HealthValue)
 {
-	CharHealth += ObjectInfo.InventoryItemInfo.HealthKitPower;
-	if (CharHealth > 100.0f)
-	{
-		CharHealth = 100.0f;
-	}
+	CharHealth = HealthValue;
 }
+
 
 

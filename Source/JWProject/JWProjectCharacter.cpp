@@ -10,6 +10,8 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "JWGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -67,6 +69,9 @@ void AJWProjectCharacter::BeginPlay()
 	
 	Mesh1P->SetHiddenInGame(false, true);
 
+	if(CharHealthComponent)
+		CharHealthComponent->SetCharHealth(100.0f);
+
 	
 
 }
@@ -78,12 +83,13 @@ void AJWProjectCharacter::Destroyed()
 
 		
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Actor was destroyed")));
+	AJWProjectGameMode* myGM = Cast <AJWProjectGameMode>(UGameplayStatics::GetGameMode(this));
+	if (myGM)
+	{
+		myGM->TimerToSpawn();
+	}
 
-
-	ActorWasDestroy.Broadcast(this);
-	
-	
-		
+			
 }
 
 
@@ -126,11 +132,15 @@ void AJWProjectCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		ObjectByPick = Cast <APickUpObject>(OtherActor);
 		if (ObjectByPick)
 		{
-			CheckObject(ObjectByPick->ObjectType, ObjectByPick->WeaponType, ObjectByPick->ConsumableType, ObjectByPick->ObjectName);
+		CheckObject(ObjectByPick->ObjectType, ObjectByPick->WeaponType, ObjectByPick->ConsumableType, ObjectByPick->ObjectName);
 		}
 		
 	}
 }
+
+
+
+
 
 //Init weapon in hands
 void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
@@ -177,6 +187,7 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 		}
 		else
 		{
+			//Debug message
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("InitWeapon - Weapon not found in table -NULL"));
 			//UE_LOG(LogTemp, Warning, TEXT("ATPSCharacter::InitWeapon - Weapon not found in table -NULL"));
 		}
@@ -198,8 +209,13 @@ void AJWProjectCharacter::InitConsumable(EConsumableType ConsumableType, FName O
 				switch (ConsumableType)
 				{
 				case EConsumableType::FirstAidType:
-					SendObjectInfo.Broadcast(ObjectInfo);
+					CharHealthComponent->SetCharHealth(CharHealthComponent->GetCharHealth() + ObjectInfo.InventoryItemInfo.HealthKitPower);
+					if (CharHealthComponent->GetCharHealth() > 100.f)
+						CharHealthComponent->SetCharHealth(100.0f);
 					break;
+				case EConsumableType::SpeedUpType:
+					SprintStart(ObjectInfo.InventoryItemInfo.SpeedUpPower);
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &AJWProjectCharacter::SprintEnd, ObjectInfo.InventoryItemInfo.SpeedPowerTime, false, 2.0f);
 				default:
 					break;
 				}
@@ -207,6 +223,32 @@ void AJWProjectCharacter::InitConsumable(EConsumableType ConsumableType, FName O
 		}
 	}
 
+}
+
+float AJWProjectCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	
+	CharHealthComponent->SetCharHealth(CharHealthComponent->GetCharHealth() - DamageAmount);
+
+	if (CharHealthComponent->GetCharHealth() == -0.1f || CharHealthComponent->GetCharHealth() == 0.1f)
+	{
+		this->Destroy();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Life is = %f"), CharHealthComponent->GetCharHealth()));
+	}
+	
+
+	if ((CharHealthComponent->GetCharHealth()) < 0.0f)
+	{
+		CharHealthComponent->SetCharHealth(0.0f);
+	}
+	
+
+	return DamageAmount;
 }
 
 void AJWProjectCharacter::RespawnCharacter()
@@ -305,6 +347,16 @@ void AJWProjectCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AJWProjectCharacter::SprintStart(float Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * Value;
+}
+
+void AJWProjectCharacter::SprintEnd()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
 
 

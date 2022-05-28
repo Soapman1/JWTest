@@ -24,18 +24,24 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float CharHealth = 0.0f;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float CharHealth = 100.0f;
-		
-	UFUNCTION()
-		void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigateBy, AActor* DamageCauser);
+	
 
-	UFUNCTION()
-		void UseObjectInfo(FObjectInfo ObjectInfo);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		float GetCharHealth();
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		void SetCharHealth(float HealthValue);
+
+
+
+	
 		
 };

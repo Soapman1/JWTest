@@ -7,6 +7,8 @@
 #include "Libraries/Types.h"
 #include "Engine/DataTable.h"
 #include "Objects/PickUpObject.h"
+#include "JWProjectGameMode.h"
+#include "JWProjectCharacter.h"
 #include "JWGameInstance.generated.h"
 
 /**

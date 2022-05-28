@@ -2,10 +2,8 @@
 
 #include "JWProjectGameMode.h"
 #include "JWProjectHUD.h"
-#include "CharHealthComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "CharHealthComponent.h"
-
+#include "JWGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
 
 AJWProjectGameMode::AJWProjectGameMode()
@@ -27,28 +25,17 @@ void AJWProjectGameMode::BeginPlay()
 {
 	Super:: BeginPlay();
 
-	AJWProjectCharacter* ProjChar = Cast <AJWProjectCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	if (ProjChar)
-	{
-		ProjChar->ActorWasDestroy.AddDynamic(this, &AJWProjectGameMode::TimerToSpawn);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("ProjChar is NOT NULL")));
-	}
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("ProjChar is NULL")));
-
 	
-
 }
 
-void AJWProjectGameMode::TimerToSpawn(AJWProjectCharacter* DeathChar)
+void AJWProjectGameMode::TimerToSpawn()
 {
 	
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AJWProjectGameMode::SpawnActorAfterDeath, 1.0f, false, 2.0f);
 	
 	//ADD DEATH WIDGET
 
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Timer was started")));
+	
 }
 
 void AJWProjectGameMode::SpawnActorAfterDeath()
@@ -64,14 +51,10 @@ void AJWProjectGameMode::SpawnActorAfterDeath()
 	{
 		AJWProjectCharacter* SpawnedActor = GetWorld()->SpawnActor<AJWProjectCharacter>(DefaultPawnClass, Location, Rotation, SpawnParams);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(SpawnedActor);
-		//SpawnedActor->CharHealthComponent->CharHealth = 100.0f;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Health  = %d"),SpawnedActor->CharHealthComponent->CharHealth));
+		
 	}
-	//ADD HEALTH AFTER SPAWN
 	
-	 
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Actor was spawned")));
-
+	
 }
 
 
