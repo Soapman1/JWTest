@@ -107,6 +107,8 @@ struct FObjectInfo : public FTableRowBase
 		float RateOfFire = 0.5f;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 		int32 NumberProjectileByShot = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+		int32 WeaponRound = 10;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound ")
 		USoundBase* SoundFireWeapon = nullptr;
 	

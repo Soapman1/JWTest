@@ -57,7 +57,10 @@ void APickUpObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+
 }
+
 
 void APickUpObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -70,4 +73,6 @@ void APickUpObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 
 	}
 }
+
+
 

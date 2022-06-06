@@ -91,7 +91,7 @@ public:
 		FVector GunOffset;
 
 	
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AJWProjectProjectile> ProjectileClass;
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
@@ -99,10 +99,9 @@ public:
 
 	
 
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		UAnimMontage* FireAnimation;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponInfo")
 		bool bCanFire = false;
 
@@ -112,6 +111,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim")
 		UAnimMontage* DeathAnim = nullptr;
+
+	UPROPERTY()
+		int32 CurrentRound ;
+	UPROPERTY()
+		bool WeaponReloading = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rate of Fire")
+		float FireTimer = 0.0f;
 
 		
 	UFUNCTION()
@@ -127,13 +133,31 @@ public:
 		void RespawnCharacter();
 
 	UFUNCTION(BlueprintNativeEvent)
+		void CharHealing_BP();
+
+	UFUNCTION(BlueprintNativeEvent)
+		void ShowSpeedUpWidget_BP(float DelayValue);
+
+
+	UFUNCTION(BlueprintNativeEvent)
 		void RespawnCharacter_BP(UAnimMontage* Anim);
 
 
 protected:
+
+	virtual void Tick(float DeltaTime) override;
+
+	void FireTick(float DeltaTime);
+
 	
 	/** Fires a projectile. */
 	void OnFire();
+
+	void OnReloading();
+
+	void OnFireStart();
+
+	void OnFireEnd();
 
 	
 	/** Handles moving forward/backward */

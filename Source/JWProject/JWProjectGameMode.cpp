@@ -10,8 +10,9 @@ AJWProjectGameMode::AJWProjectGameMode()
 	: Super()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/Player/BP_JWProjectCharacter"));
-	DefaultPawnClass = PlayerPawnClassFinder.Class;
+	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/Player/BP_JWProjectCharacter"));
+	//DefaultPawnClass = PlayerPawnClassFinder.Class;
+	// default class in Project settings. This construction coming 75% editor stuck :( 
 	
 
 	// use our custom HUD class

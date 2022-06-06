@@ -45,6 +45,6 @@ void AJWProjectProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 			
 		UGameplayStatics::ApplyDamage(Hit.GetActor(), ProjChar->ObjectInfo.WeaponDamage, NULL, this, NULL);
 		
-		// Destroy();
+		Destroy();
 	}
 }

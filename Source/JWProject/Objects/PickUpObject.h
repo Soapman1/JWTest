@@ -29,16 +29,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FPickedObject PickedObject;
 
+	FPickedObject PickedObject;
 	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setting")
 		bool bIsPickable = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+		bool bCanFire = false;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Name")
 		FName ObjectName;
 
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Type")
 		EObjectType ObjectType = EObjectType::WeaponType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object Type")
@@ -59,9 +64,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BoxCollision")
 		UBoxComponent* BoxCollision;
 
+	
+
 	UFUNCTION(BlueprintCallable)
 		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-
-
+	
 };

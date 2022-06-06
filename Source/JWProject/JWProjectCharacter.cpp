@@ -47,7 +47,7 @@ AJWProjectCharacter::AJWProjectCharacter()
 	// Create bullet location
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FirstPersonCameraComponent);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(108.0f, 11.0f, -24.0f));
+	FP_MuzzleLocation->SetRelativeLocation(FVector(110.0f, 11.0f, -24.0f));
 	FP_MuzzleLocation->SetRelativeRotation(FRotator(25.0f, -21.0f, -2.0f));
 
 	//Event begin overlap	
@@ -111,7 +111,8 @@ void AJWProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AJWProjectCharacter::OnFire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AJWProjectCharacter::OnFireStart);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AJWProjectCharacter::OnFireEnd);
 
 	
 	
@@ -177,7 +178,8 @@ void AJWProjectCharacter::InitWeapon(EWeaponType WeaponType, FName ObjectName)
 					FAttachmentTransformRules Rule(EAttachmentRule::SnapToTarget, false);
 					myWeapon->AttachToComponent(Mesh1P, Rule, FName("RightSocket"));
 					CurrentWeapon = myWeapon;
-					bCanFire = true;
+					CurrentRound = ObjectInfo.WeaponRound;
+					
 
 					
 				}
@@ -210,12 +212,14 @@ void AJWProjectCharacter::InitConsumable(EConsumableType ConsumableType, FName O
 				{
 				case EConsumableType::FirstAidType:
 					CharHealthComponent->SetCharHealth(CharHealthComponent->GetCharHealth() + ObjectInfo.InventoryItemInfo.HealthKitPower);
+					CharHealing_BP();
 					if (CharHealthComponent->GetCharHealth() > 100.f)
 						CharHealthComponent->SetCharHealth(100.0f);
 					break;
 				case EConsumableType::SpeedUpType:
 					SprintStart(ObjectInfo.InventoryItemInfo.SpeedUpPower);
 					GetWorldTimerManager().SetTimer(TimerHandle, this, &AJWProjectCharacter::SprintEnd, ObjectInfo.InventoryItemInfo.SpeedPowerTime, false, 2.0f);
+					ShowSpeedUpWidget_BP(ObjectInfo.InventoryItemInfo.SpeedPowerTime);
 				default:
 					break;
 				}
@@ -258,15 +262,45 @@ void AJWProjectCharacter::RespawnCharacter()
 
 }
 
+void AJWProjectCharacter::ShowSpeedUpWidget_BP_Implementation(float DelayValue)
+{
+	//in BP show and hide widget
+}
+
+void AJWProjectCharacter::CharHealing_BP_Implementation()
+{
+	//in BP
+}
+
 void AJWProjectCharacter::RespawnCharacter_BP_Implementation(UAnimMontage* Anim)
 {
 	//in BP
 }
 
+void AJWProjectCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	FireTick(DeltaTime);
+}
+
+void AJWProjectCharacter::FireTick(float DeltaTime)
+{
+	//if (bCanFire && ObjectInfo.WeaponRound > 0 && !WeaponReloading && CurrentWeapon)
+//{
+		if (FireTimer < 0.f)
+		{
+			if (bCanFire && ObjectInfo.WeaponRound > 0 && !WeaponReloading && CurrentWeapon)
+				OnFire();
+		}
+		else
+			FireTimer -= DeltaTime;
+//	}
+}
+
 void AJWProjectCharacter::OnFire()
 {
-	if (bCanFire)
-	{
+
 		// try and fire a projectile
 		if (ProjectileClass != nullptr)
 		{
@@ -283,7 +317,7 @@ void AJWProjectCharacter::OnFire()
 
 				// spawn the projectile at the muzzle
 				World->SpawnActor<AJWProjectProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-
+			
 			}
 
 			FHitResult HitResult;
@@ -313,9 +347,13 @@ void AJWProjectCharacter::OnFire()
 		}
 
 
-	}
+		FireTimer = ObjectInfo.RateOfFire;
+		ObjectInfo.WeaponRound -= 1;
 	
-	
+}
+
+void AJWProjectCharacter::OnReloading()
+{
 }
 
 
@@ -326,6 +364,16 @@ void AJWProjectCharacter::MoveForward(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
+}
+
+void AJWProjectCharacter::OnFireStart()
+{
+	bCanFire = true;
+}
+
+void AJWProjectCharacter::OnFireEnd()
+{
+	bCanFire = false;
 }
 
 void AJWProjectCharacter::MoveRight(float Value)
